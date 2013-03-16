@@ -1,0 +1,84 @@
+@()
+
+@import play.api.Play
+@import play.api.Play.current
+
+@defining(Play.configuration) { config =>
+@defining(config.getString("application.name").getOrElse("")) { applicationName =>
+@defining(config.getString("application.stage").getOrElse("")) { applicationStage =>
+@defining(config.getString("application.version").getOrElse("")) { applicationVersion =>
+
+<!DOCTYPE html>
+
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" data-ng-app="app" data-ng-controller="AppCtrl"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" data-ng-app="app" data-ng-controller="AppCtrl"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" data-ng-app="app" data-ng-controller="AppCtrl"> <![endif]-->
+<!--[if gt IE 8]><!-->
+  <html class="no-js" data-ng-app="app" data-ng-controller="AppCtrl">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="fragment" content="!" />
+
+  <title>Jege</title>
+
+  @if(applicationStage == "DEV") {
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/"+applicationName+"-"+applicationVersion+".css")">
+  }
+  @if(applicationStage == "PROD") {
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/"+applicationName+"-"+applicationVersion+".min.css")">
+  }
+  <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="container">
+      <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="navbar-brand" href="/">Jege</a>
+
+      <div class="nav-collapse collapse navbar-responsive-collapse">
+        <ul class="nav">
+          <li class="active">
+            <a href="/">Home</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div data-ng-view="view"></div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular-resource.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.0.1/lodash.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+
+
+  @if(applicationStage == "DEV") {
+    <script src="@routes.Assets.at("javascripts/app/"+applicationName+"-"+ applicationVersion +".js")"></script>
+    <script src="http://localhost:35729/livereload.js?snipver=1"></script>
+  }
+  @if(applicationStage == "PROD") {
+    <script src="@routes.Assets.at("javascripts/app/"+applicationName+"-"+ applicationVersion +".min.js")"></script>
+  }
+
+</body>
+</html>
+
+}
+}
+}
+}

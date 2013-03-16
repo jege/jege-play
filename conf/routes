@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.main(any = "none")
+
+# Views
+GET     /views/index                controllers.Application.index
+## Last view: if not yet found, then 404
+GET     /views/*any                 controllers.Application.notFound(any)
+
+# API
+## Last API: if not yet found, then 404
+GET     /api/*any                   controllers.Application.notFound(any)
+
+# Assets
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Fallback
+GET     /*any                       controllers.Application.main(any)
