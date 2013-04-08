@@ -1,0 +1,38 @@
+@()
+
+@modal("modalSignin", "Sign in") {
+<form class="form-horizontal" data-ng-submit="signin()">
+  } {
+  <div class="control-group">
+    <label class="control-label" for="signinUsername">Username</label>
+    <div class="controls">
+      <input type="text" id="signinUsername" placeholder="Username" class="input-with-feedback" data-ng-model="signinForm.username">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="signinPassword">Password</label>
+    <div class="controls">
+      <input type="password" id="signinPassword" placeholder="Password" class="input-with-feedback" data-ng-submit="signinForm.password">
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label"></label>
+    <div class="controls">
+      <a onclick="$('#modalRegister').modal('hide');$('#modalSignin').modal('show');">Forgot your password?</a>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label"></label>
+    <div class="controls">
+      No account yet? <a onclick="$('#modalSignin').modal('hide');$('#modalRegister').modal('show');">Click here to register</a>.
+    </div>
+  </div>
+  } {
+  <a href="#" class="btn" data-dismiss="modal">Close</a>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+  } {
+</form>
+}

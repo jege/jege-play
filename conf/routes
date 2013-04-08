@@ -3,19 +3,19 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.main(any = "none")
+GET     /                           controllers.Application.main(url = "")
 
 # Views
 GET     /views/index                controllers.Application.index
 ## Last view: if not yet found, then 404
-GET     /views/*any                 controllers.Application.notFound(any)
+GET     /views/*url                 controllers.Application.notFound(url)
 
 # API
 ## Last API: if not yet found, then 404
-GET     /api/*any                   controllers.Application.notFound(any)
+GET     /api/*url                   controllers.Application.notFound(url)
 
 # Assets
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Fallback
-GET     /*any                       controllers.Application.main(any)
+GET     /*url                       controllers.Application.main(url)

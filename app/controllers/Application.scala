@@ -1,11 +1,10 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 
-object Application extends Controller {
+object Application extends ExtController {
 
-  def main(any: String) = Action {
+  def main(url: String) = Action {
     Ok(views.html.templates.main())
   }
 
@@ -13,7 +12,7 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
-  def notFound(any: String) = Action {
+  def notFound(url: String) = Action {
     NotFound
   }
   
