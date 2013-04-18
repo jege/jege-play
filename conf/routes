@@ -11,6 +11,10 @@ GET     /views/index                controllers.Application.index
 GET     /views/*url                 controllers.Application.notFound(url)
 
 # API
+GET     /api/v1/users               controllers.Users.all
+GET     /api/v1/users/:id           controllers.Users.findById(id: String)
+POST    /api/v1/users               controllers.Users.create
+
 ## Last API: if not yet found, then 404
 GET     /api/*url                   controllers.Application.notFound(url)
 

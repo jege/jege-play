@@ -1,7 +1,9 @@
 package models
 
-object User extends Entity {
-  override val collection = db("users")
+import play.modules.reactivemongo.json.collection.JSONCollection
+
+object User extends Model {
+  override val collection = db[JSONCollection]("users")
 
   val USERNAME = "username"
   val PASSWORD = "password"

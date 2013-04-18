@@ -1,6 +1,6 @@
 
 app.controller("AppCtrl", [
-  "$scope", "$routeParams", function($scope, $routeParams) {
+  "$scope", "$routeParams", "$http", function($scope, $routeParams, $http) {
     $scope.signinForm = {
       username: "",
       password: ""
@@ -16,6 +16,7 @@ app.controller("AppCtrl", [
     };
     return $scope.register = function() {
       console.log("REGISTER");
+      $http.post("/api/v1/users", $scope.registerForm);
       return console.log($scope.registerForm);
     };
   }

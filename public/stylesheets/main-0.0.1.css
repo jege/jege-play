@@ -6192,6 +6192,10 @@ body {
   padding-top: 40px;
 }
 
+a {
+  cursor: pointer;
+}
+
 input.ng-invalid,
 textarea.ng-invalid {
   padding-right: 32px;

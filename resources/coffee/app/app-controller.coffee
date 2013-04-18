@@ -1,4 +1,4 @@
-app.controller("AppCtrl", ["$scope", "$routeParams", ($scope, $routeParams) ->
+app.controller("AppCtrl", ["$scope", "$routeParams", "$http", ($scope, $routeParams, $http) ->
   $scope.signinForm =
     username: ""
     password: ""
@@ -14,5 +14,6 @@ app.controller("AppCtrl", ["$scope", "$routeParams", ($scope, $routeParams) ->
 
   $scope.register = () ->
     console.log "REGISTER"
+    $http.post("/api/v1/users", $scope.registerForm)
     console.log $scope.registerForm
 ])

@@ -32,8 +32,10 @@ module.exports = (grunt) ->
 
   grunt.registerTask("default", ["build", "livereload-start", "watch"])
 
-  grunt.registerTask("build", ["coffeeBuild", "lessBuild", "componentsBuild", "imagesBuild", "fontsBuild"])
-  grunt.registerTask("dist", ["coffeeDist", "lessDist", "componentsBuild", "imagesBuild", "fontsBuild", "concat:postDist", "uglify"]) # , "jshint"
+  grunt.registerTask("update", ["bowerInstall"])
+
+  grunt.registerTask("build", ["coffeeBuild", "lessBuild", "bower:build", "imagesBuild", "fontsBuild"])
+  grunt.registerTask("dist", ["coffeeDist", "lessDist", "bower:build", "imagesBuild", "fontsBuild", "concat:postDist", "uglify"]) # , "jshint"
 
   grunt.registerTask("coffeeBuild", ["clean:tmpCoffee", "clean:scripts", "coffee:raw"])
   grunt.registerTask("coffeeDist", ["clean:tmpCoffee", "clean:tmpScripts", "clean:scripts", "coffee:dist"])
@@ -43,7 +45,6 @@ module.exports = (grunt) ->
 
   grunt.registerTask("imagesBuild", ["copy:images"])
   grunt.registerTask("fontsBuild", ["copy:fonts"])
-  grunt.registerTask("componentsBuild", ["copy:components"])
 
   grunt.initConfig
     config: appConfig
@@ -53,6 +54,13 @@ module.exports = (grunt) ->
           '<%= grunt.template.today("yyyy-mm-dd") %>\n' + '<%= config.pkg.homepage ? "* " + config.pkg.homepage + "\n" : "" %>' +
           '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= config.config.pkg.author.name %>;' +
           ' Licensed <%= _.pluck(config.pkg.licenses, "type").join(", ") %> */'
+
+    bower:
+      build:
+        dest: "<%= config.dir.dist.scripts %>/vendors"
+#        options:
+#          basePath: "resources/components/"
+
 
     clean:
       tmpCoffee: ["<%= config.dir.tmp.coffee %>"]
@@ -71,11 +79,6 @@ module.exports = (grunt) ->
           ]
 
     copy:
-      components:
-        expand: true
-        cwd: "<%= config.dir.resources.components %>"
-        dest: "<%= config.dir.dist.scripts %>/vendors"
-        src: ["*/*.js"]
       fonts:
         expand: true
         dot: true
