@@ -1,4 +1,8 @@
 app.controller("AppCtrl", ["$scope", "$routeParams", "$http", ($scope, $routeParams, $http) ->
+  $scope.data =
+    test: "Test"
+    number: 42
+
   $scope.signinForm =
     username: ""
     password: ""
@@ -9,7 +13,7 @@ app.controller("AppCtrl", ["$scope", "$routeParams", "$http", ($scope, $routePar
     email: ""
 
   $scope.signin = () ->
-    console.log "SIGN IN"
+    console.log "SIGN IN 3"
     console.log $scope.signinForm
 
   $scope.register = () ->

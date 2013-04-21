@@ -2,9 +2,9 @@
   "name": "jege",
   "version": "0.0.1",
   "dependencies": {
-    "requirejs": "~2.1.4",
+    "jquery": "~1.9.0",
     "modernizr": "~2.6.2",
-    "jquery": "~1.9.1",
-    "lodash": "~1.1.1"
+    "lodash": "~1.2.0",
+    "requirejs": "~2.1.5"
   }
 }

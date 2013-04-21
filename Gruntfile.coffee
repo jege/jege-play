@@ -1,7 +1,26 @@
 "use strict"
 
+# Plugin tasks to be renamed to prevent conflict from plugins having the same task name.
+# Be sure to include renamed plugins first
+renamedTasks =
+  "grunt-bower-hooks":
+    original: "bower"
+    renamed: "bowerHooks"
+  "grunt-bower-task":
+    original: "bower"
+    renamed: "bowerTask"
+
 module.exports = (grunt) ->
-  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
+  bower = require("bower")
+  path = require("path")
+  refreshResetFlag = false
+
+  require('matchdep').filterDev('grunt-*').forEach( (plugin) ->
+    grunt.loadNpmTasks plugin
+    if renamedTasks[plugin]
+      grunt.renameTask(renamedTasks[plugin].original, renamedTasks[plugin].renamed)
+
+  )
 
   appConfig =
     pkg : grunt.file.readJSON("package.json")
@@ -10,13 +29,13 @@ module.exports = (grunt) ->
     filenameversion: "<%= config.filename %>-<%= config.version %>"
     dir:
       app: "app"
+      components: "components"
       resources:
         root: "resources"
         less: "<%= config.dir.resources.root %>/less"
         coffee: "<%= config.dir.resources.root %>/coffee"
         images: "<%= config.dir.resources.root %>/images"
         fonts: "<%= config.dir.resources.root %>/fonts"
-        components: "<%= config.dir.resources.root %>/components"
       dist:
         root: "public"
         images: "<%= config.dir.dist.root %>/images"
@@ -28,9 +47,7 @@ module.exports = (grunt) ->
         coffee: "<%= config.dir.tmp.root %>/coffee"
         scripts: "<%= config.dir.tmp.root %>/scripts"
 
-  grunt.renameTask('regarde', 'watch')
-
-  grunt.registerTask("default", ["build", "livereload-start", "watch"])
+  grunt.registerTask("default", ["build", "livereload-start", "regarde"])
 
   grunt.registerTask("update", ["bowerInstall"])
 
@@ -46,6 +63,87 @@ module.exports = (grunt) ->
   grunt.registerTask("imagesBuild", ["copy:images"])
   grunt.registerTask("fontsBuild", ["copy:fonts"])
 
+  grunt.registerTask("bowerInstall", "Install all bower dependencies", () ->
+    verboseLog = if grunt.option("verbose") then grunt.log else grunt.verbose
+    done = this.async()
+    bower.commands.install()
+      .on('data', (data) ->
+        verboseLog.writeln(data)
+      )
+      .on('end', () ->
+        grunt.log.ok("Bower packages installed successfully")
+        done()
+      )
+      .on('error', (error) ->
+        grunt.fail.fatal(error)
+      )
+  )
+
+  grunt.registerMultiTask('refresh', 'Refresh modified files', () ->
+    this.requires("regarde")
+    grunt.verbose.writeln("refresh:" + this.target + ' -> ' + JSON.stringify(this.data))
+    tasks = []
+
+    clean = grunt.config("clean")
+    if (clean && clean.refresh)
+      tasks.push("clean:refresh")
+
+    config = grunt.config(this.target)
+    grunt.verbose.writeln(JSON.stringify(config))
+    if (config && config.refresh)
+      tasks.push(this.target + ":refresh")
+
+    grunt.verbose.writeln(tasks)
+    grunt.task.run(tasks)
+    refreshResetFlag = true
+  )
+
+  updateCleanRefresh = (filepath) ->
+    clean = grunt.config("clean") || {}
+    cleanRefresh = clean.refresh || []
+    cleanRefresh.push(filepath)
+    grunt.log.writeln(JSON.stringify(clean))
+    grunt.config("clean", clean)
+
+  updateCoffeeRefresh = (filepath) ->
+    coffee = grunt.config("coffee") || {}
+    coffeeRefresh = coffee.refresh || {}
+    coffeeRefresh.files = coffeeRefresh.files || []
+    coffeeRefresh.files.push(
+      expand: true
+      cwd: path.dirname(filepath)
+      src: path.basename(filepath)
+      dest: path.dirname(filepath).replace("resources/coffee", "public/javascripts")
+      ext: ".js"
+    )
+    grunt.config("coffee", coffee)
+
+
+
+  grunt.event.on("regarde:file", (status, target, filepath) ->
+    grunt.verbose.writeln("regarde:file " + status + " - " + target + " - " + filepath)
+    if (refreshResetFlag)
+      clean = grunt.config("clean") || {}
+      clean.refresh = []
+      grunt.config("clean", clean)
+
+      coffee = grunt.config("coffee") || {}
+      coffeeRefresh = coffee.refresh || {}
+      coffeeRefresh.files = []
+      grunt.config("coffee", coffee)
+      refreshResetFlag = false
+
+    if (filepath && status == "deleted")
+      switch target
+        when "coffee" then updateCleanRefresh(filepath.replace("resources/coffee", "public/javascripts").replace(".coffee", ".js"))
+        else ""
+    else if (filepath && !grunt.file.isDir(filepath))
+      switch target
+        when "coffee" then updateCoffeeRefresh(filepath)
+        else ""
+
+  )
+
   grunt.initConfig
     config: appConfig
 
@@ -55,14 +153,17 @@ module.exports = (grunt) ->
           '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= config.config.pkg.author.name %>;' +
           ' Licensed <%= _.pluck(config.pkg.licenses, "type").join(", ") %> */'
 
+    bowerInstall: {}
+
     bower:
       build:
         dest: "<%= config.dir.dist.scripts %>/vendors"
 #        options:
-#          basePath: "resources/components/"
+#          basePath: "components/"
 
 
     clean:
+      refresh: []
       tmpCoffee: ["<%= config.dir.tmp.coffee %>"]
       tmpScripts: ["<%= config.dir.tmp.scripts %>"]
       styles: ["<%= config.dir.dist.styles %>"]
@@ -73,8 +174,8 @@ module.exports = (grunt) ->
       postDist:
         files:
           "<%= config.dir.dist.scripts %>/main-<%= config.version %>.js": [
-            "<%= config.dir.resources.components %>/jquery/jquery.js",
-            "<%= config.dir.resources.components %>/lodash/lodash.js",
+            "<%= config.dir.components %>/jquery/jquery.js",
+            "<%= config.dir.components %>/lodash/lodash.js",
             "<%= config.dir.tmp.scripts %>/main-<%= config.version %>.js"
           ]
 
@@ -93,6 +194,7 @@ module.exports = (grunt) ->
         src: ["*"]
 
     coffee:
+      refresh: {}
       raw:
         expand: true
         cwd: "<%= config.dir.resources.coffee %>"
@@ -142,13 +244,14 @@ module.exports = (grunt) ->
           useStrict: true
           wrap: true
 
-    watch:
-      gruntfile:
-        files: ["Gruntfile.coffee"]
-        tasks: ["build"]
+    refresh:
+      clean: {}
+      coffee: {}
+
+    regarde:
       coffee:
         files: ["resources/coffee/**/*"]
-        tasks: ["coffeeBuild"]
+        tasks: ["refresh:coffee"]
       less:
         files: ["resources/less/**/*"]
         tasks: ["lessBuild"]
