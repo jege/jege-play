@@ -58,7 +58,7 @@ If you have the tools installed, here is the standard procedure to start the pro
 - Open 2 shells and for both, go to [PROJECT]
 - In the first one, run `play`
 - Once the Play console is started, launch `run` in order to start Play server
-- In the second shell, run `grunt`, it will compile all resources and start live-reloading
+- In the second shell, first run `grunt update` then `grunt`, it will compile all resources and start live-reloading
 - Open a browser
 - Go to [http://localhost:9000](http://localhost:9000)
 - This will automatically compile the Play project and display the index page of the site
