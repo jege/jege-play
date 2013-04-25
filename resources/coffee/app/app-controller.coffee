@@ -1,6 +1,6 @@
 app.controller("AppCtrl", ["$scope", "$routeParams", "$http", ($scope, $routeParams, $http) ->
   $scope.data =
-    test: "Test"
+    test: "Salut tout le monde"
     number: 42
 
   $scope.signinForm =

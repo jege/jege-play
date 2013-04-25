@@ -19,7 +19,6 @@ app = angular.module("app", ["ngResource"]).constant("Config", {
 ]);
 
 Entity = (function() {
-
   function Entity() {}
 
   return Entity;
@@ -27,7 +26,6 @@ Entity = (function() {
 })();
 
 Service = (function() {
-
   function Service() {}
 
   return Service;
