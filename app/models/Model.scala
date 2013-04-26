@@ -20,7 +20,7 @@ import play.modules.reactivemongo._
 
 trait Model {
   val db: DB = ReactiveMongoPlugin.db
-  def collection: JSONCollection
+  def collectionJson: JSONCollection
 
   val MONGO_ID = "_id"
   val MONGO_OID = "$oid"
@@ -28,11 +28,11 @@ trait Model {
   val VERSION = "version"
   val LAST_UPDATE = "lastUpdate"
 
-  def all(): Future[JsArray] = collection.find(Json.obj()).cursor[JsObject].toList.map(new JsArray(_))
-  def findById(id: String): Future[Option[JsObject]] = collection.find(Json.obj( MONGO_ID -> Json.obj(MONGO_OID -> id) )).cursor[JsObject].toList.map(_.headOption)
+  def allJson(): Future[JsArray] = collectionJson.find(Json.obj()).cursor[JsObject].toList.map(new JsArray(_))
+  def findByIdJson(id: String): Future[Option[JsObject]] = collectionJson.find(Json.obj( MONGO_ID -> Json.obj(MONGO_OID -> id) )).cursor[JsObject].toList.map(_.headOption)
 
-  def create(entity: JsValue): Future[LastError] = entity match {
-    case obj: JsObject => collection.insert(entity)
+  def createJson(entity: JsValue): Future[LastError] = entity match {
+    case obj: JsObject => collectionJson.insert(entity)
     case _ => throw new IllegalStateException("Entity.create required a JsObject")
   }
 }

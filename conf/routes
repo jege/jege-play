@@ -18,6 +18,10 @@ POST    /api/v1/users               controllers.Users.create
 ## Last API: if not yet found, then 404
 GET     /api/*url                   controllers.Application.notFound(url)
 
+## Auth google APIs
+GET     /login                      controllers.Authentication.login
+GET     /oauth2callback             controllers.Authentication.oauth2callback
+
 # Assets
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

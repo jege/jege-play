@@ -12,19 +12,19 @@ trait ModelController extends ExtController {
 
   def all()  = Action { implicit request =>
     Async {
-      model.all().map( Ok(_) )
+      model.allJson().map( Ok(_) )
     }
   }
 
   def findById(id: String)  = Action { implicit request =>
     Async {
-      model.findById(id).map( _.map( Ok(_) ).getOrElse( NotFound("") ) )
+      model.findByIdJson(id).map( _.map( Ok(_) ).getOrElse( NotFound("") ) )
     }
   }
 
   def create() = Action(parse.json) { implicit request =>
     Async {
-      model.create(request.body).map(le => Ok(Json.obj("ok" -> le.ok)))
+      model.createJson(request.body).map(le => Ok(Json.obj("ok" -> le.ok)))
     }
   }
 }
