@@ -8,7 +8,7 @@ object Application extends ExtController with Authentication {
     Ok(views.html.templates.main())
   }
 
-  def index = Authenticated { implicit user => implicit request =>
+  def index = GoogleAuthenticated { implicit user => implicit request =>
     Ok(views.html.index())
   }
 

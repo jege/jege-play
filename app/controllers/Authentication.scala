@@ -18,7 +18,7 @@ import models._
 
 trait Authentication {
 
-  def Authenticated(f: User => Request[AnyContent] => Result) = Action { implicit request =>
+  def GoogleAuthenticated(f: User => Request[AnyContent] => Result) = Action { implicit request =>
     Authentication.TokenResponse.fromSession(request.session) match {
       case Some(token) =>
         Logger("oauth2.Authenticated").debug(s"Token: $token")
@@ -116,7 +116,7 @@ object Authentication extends Controller {
           Async {
             getToken(code).map {
               case Success(token) =>
-                val target = routes.Application.index  // state.getOrElse(routes.Application.index) ?
+                val target = routes.Application.main("") // state.getOrElse(routes.Application.index) ?
                 Redirect(target).withSession(
                   "accessToken" -> token.accessToken.value,
                   "expiresIn" -> token.expiresIn.getMillis.toString
