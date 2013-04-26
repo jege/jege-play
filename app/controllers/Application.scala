@@ -4,11 +4,11 @@ import play.api.mvc._
 
 object Application extends ExtController with Authentication {
 
-  def main(url: String) = Action {
+  def main(url: String) = GoogleAuthenticated { implicit user => implicit request =>
     Ok(views.html.templates.main())
   }
 
-  def index = GoogleAuthenticated { implicit user => implicit request =>
+  def index = Action {
     Ok(views.html.index())
   }
 
