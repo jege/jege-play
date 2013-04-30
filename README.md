@@ -1,4 +1,4 @@
-# Welcome on Jege #
+# Welcome to the Jege #
 
 Coming soon, the awesome description of the project.
 
